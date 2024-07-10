@@ -6,6 +6,7 @@ import MainLayout from "@/layouts/MainLayout.vue";
 import PictureBookCreate from "@/views/PictureBookCreate.vue";
 import PictureBookRead from "@/views/PictureBookRead.vue";
 import LoginSns from "@/components/LoginSns.vue";
+import MugenQuiz from "@/views/MugenQuiz.vue";
 
 const routes = [
   {
@@ -37,6 +38,12 @@ const routes = [
         component: PictureBookRead,
         meta: { requiresAuth: true },
         props: () => ({ mode: "all" }),
+      },
+      {
+        path: "mugen-quiz",
+        name: "MugenQuiz",
+        component: MugenQuiz,
+        meta: { requiresAuth: true },
       },
       {
         path: "",

@@ -67,6 +67,17 @@
           <hr class="my-4 border-t border-gray-300" />
         </li>
         <li class="mb-4">
+          <router-link
+            to="/contents/mugen-quiz"
+            @click="closeMenu"
+            class="block p-2 rounded-lg transition-colors duration-200 ease-in-out hover:bg-gray-100 dark:hover:bg-paper-yellow"
+            ><i class="fas fa-question mr-2"></i> むげんクイズ</router-link
+          >
+        </li>
+        <li class="mb-4">
+          <hr class="my-4 border-t border-gray-3000" />
+        </li>
+        <li class="mb-4">
           <button
             @click="$emit('logout')"
             class="w-full text-left p-2 rounded-lg transition-colors duration-200 ease-in-out hover:bg-gray-100 dark:hover:bg-paper-yellow"
