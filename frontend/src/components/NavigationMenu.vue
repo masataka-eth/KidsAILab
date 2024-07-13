@@ -75,7 +75,18 @@
           >
         </li>
         <li class="mb-4">
-          <hr class="my-4 border-t border-gray-3000" />
+          <hr class="my-4 border-t border-gray-300" />
+        </li>
+        <li class="mb-4">
+          <router-link
+            to="/contents/cooking-recipe"
+            @click="closeMenu"
+            class="block p-2 rounded-lg transition-colors duration-200 ease-in-out hover:bg-gray-100 dark:hover:bg-paper-yellow"
+            ><i class="fas fa-utensils mr-2"></i> りょうりをつくる</router-link
+          >
+        </li>
+        <li class="mb-4">
+          <hr class="my-4 border-t border-gray-300" />
         </li>
         <li class="mb-4">
           <button

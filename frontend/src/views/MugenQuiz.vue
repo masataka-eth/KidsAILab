@@ -16,7 +16,9 @@
     <hr class="my-8 border-t-2 border-dashed border-gray-300" />
     <p class="text-center text-lg mb-4 text-gray-600">もんだいをえらぼう！</p>
     <div class="flex flex-wrap justify-center gap-4">
-      <div v-if="loading" class="loader"></div>
+      <div v-if="loading" class="text-center">
+        <i class="fas fa-spinner fa-spin text-8xl text-purple-700 mt-2"></i>
+      </div>
       <button
         v-for="quiz in quizzes"
         :key="quiz.quizNo"
@@ -239,22 +241,4 @@ onMounted(() => {
 
 <style scoped>
 /* 必要に応じて追加のスタイルをここに記述 */
-.loader {
-  border: 16px solid #f3f3f3;
-  border-top: 16px solid #3498db;
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  animation: spin 2s linear infinite;
-  margin: auto;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
 </style>

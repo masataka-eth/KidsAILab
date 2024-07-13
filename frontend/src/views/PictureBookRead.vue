@@ -3,9 +3,12 @@
     <h2 class="text-4xl font-bold mb-4 text-center text-purple-700 mb-12">
       <i :class="pageIcon"></i> {{ pageTitle }}
     </h2>
-    <div class="overflow-x-auto">
-      <div v-if="isLoading" class="flex justify-center items-center h-64">
-        <div class="loadingSpinner"></div>
+    <div class="overflow-x-auto min-h-[50vh]">
+      <div
+        v-if="isLoading"
+        class="text-center h-full flex items-center justify-center"
+      >
+        <i class="fas fa-spinner fa-spin text-8xl text-purple-700"></i>
       </div>
       <div v-else>
         <div
@@ -327,6 +330,14 @@ const pageIcon = computed(() => {
     : "fas fa-users mr-2";
 });
 
+watch(isLoading, (newVal) => {
+  if (newVal) {
+    document.body.classList.add("no-scroll");
+  } else {
+    document.body.classList.remove("no-scroll");
+  }
+});
+
 defineExpose({
   books,
   currentPage,
@@ -389,5 +400,9 @@ img {
   100% {
     transform: rotate(360deg);
   }
+}
+
+body.no-scroll {
+  overflow: hidden;
 }
 </style>
