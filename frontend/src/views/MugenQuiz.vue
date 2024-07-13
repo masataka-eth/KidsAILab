@@ -4,7 +4,7 @@
       <i class="fas fa-question-circle mr-2"></i> むげんクイズ
     </h2>
     <p class="text-center text-lg mb-4 text-gray-600">
-      AIが むげん にクイズを作ってくれるゾ🔥
+      AIが むげん にクイズを作るゾ🔥
     </p>
     <div class="text-center mb-4">
       <p class="text-xl text-gray-700">いまのレベル: {{ level }}</p>
