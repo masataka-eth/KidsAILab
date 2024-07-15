@@ -8,6 +8,7 @@ import PictureBookRead from "@/views/PictureBookRead.vue";
 import LoginSns from "@/components/LoginSns.vue";
 import MugenQuiz from "@/views/MugenQuiz.vue";
 import CookingRecipe from "@/views/CookingRecipe.vue";
+import CookingAnalysis from "@/views/CookingAnalysis.vue";
 
 const routes = [
   {
@@ -50,6 +51,12 @@ const routes = [
         path: "cooking-recipe",
         name: "CookingRecipe",
         component: CookingRecipe,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "cooking-analysis",
+        name: "CookingAnalysis",
+        component: CookingAnalysis,
         meta: { requiresAuth: true },
       },
       {

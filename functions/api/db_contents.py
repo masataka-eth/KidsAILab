@@ -38,54 +38,6 @@ def add_contents(req: https_fn.Request) -> https_fn.Response:
 
     return https_fn.Response(json.dumps({"success": True}), mimetype="application/json")
 
-#############################
-# GET - コンテンツ一覧を取得する
-#############################
-# def get_contents_list(req: https_fn.Request) -> https_fn.Response:
-#     PAGE_NUM = 10
-#     firestore_client = firestore.client()
-#     query = firestore_client.collection("contents")
-
-#     google_id = req.args.get("google_id")
-#     last_date = req.args.get("last_date")
-#     last_id = req.args.get("last_id")
-
-#     if google_id:
-#         query = query.where("google_id", "==", google_id)
-
-#     query = query.order_by("date", direction=firestore.Query.DESCENDING)
-#     query = query.order_by("content_id", direction=firestore.Query.DESCENDING)
-
-#     if last_date and last_id:
-#         query = query.start_after({
-#             "date": datetime.fromisoformat(last_date),
-#             "content_id": last_id
-#         })
-
-#     contents = query.limit(PAGE_NUM + 1).get()
-
-#     contents_list = []
-#     for i, doc in enumerate(contents):
-#         if i < PAGE_NUM:
-#             data = doc.to_dict()
-#             contents_list.append({
-#                 "content_id": data["content_id"],
-#                 "date": data["date"].isoformat(),
-#                 "title": data["title"]
-#             })
-
-#     has_next_page = len(contents) > PAGE_NUM
-#     last_item = contents_list[-1] if contents_list else None
-
-#     response_data = {
-#         "contents": contents_list,
-#         "hasNextPage": has_next_page,
-#         "lastDate": last_item["date"] if last_item else None,
-#         "lastId": last_item["content_id"] if last_item else None
-#     }
-
-#     return https_fn.Response(json.dumps(response_data), mimetype="application/json")
-
 def get_contents_list(req: https_fn.Request) -> https_fn.Response:
     PAGE_NUM = 8
     firestore_client = firestore.client()
@@ -105,10 +57,6 @@ def get_contents_list(req: https_fn.Request) -> https_fn.Response:
     query = query.order_by("date", direction=firestore.Query.DESCENDING)
     contents = query.offset((page - 1) * PAGE_NUM).limit(PAGE_NUM+1).get()
 
-    # !!! 一時的にこちらでソートしている
-    # contents = sorted(contents, key=lambda x: x.to_dict().get("date"), reverse=True)
-    # print("contentsの数: ", len(contents))
-
     contents_list = []
     for i, doc in enumerate(contents):
         if i < PAGE_NUM:  # 対象ドキュメントのみ処理
@@ -126,40 +74,6 @@ def get_contents_list(req: https_fn.Request) -> https_fn.Response:
     }
 
     return https_fn.Response(json.dumps(response_data), mimetype="application/json")
-
-# def get_contents_list(req: https_fn.Request) -> https_fn.Response:
-#     firestore_client = firestore.client()
-#     query = firestore_client.collection("contents")
-
-#     # クエリパラメータからgoogle_idを取得
-#     google_id = req.args.get("google_id")
-#     # if not google_id:
-#     #     return https_fn.Response(json.dumps({"error": "google_id is required"}), status=400, mimetype="application/json")
-
-#     if google_id:
-#         query = query.where("google_id", "==", google_id)
-
-#     # orderbyするとFirestoreのクエリがエラーになるため一時的にコメントアウト
-#     query = query.order_by("date", direction=firestore.Query.DESCENDING)
-#     contents = query.get()
-
-#     # !!! 一時的にこちらでソートしている
-#     contents = sorted(contents, key=lambda x: x.to_dict().get("date"), reverse=True)
-
-#     contents_list = []
-#     for doc in contents:
-#         data = doc.to_dict()
-#         contents_list.append({
-#             "content_id": data["content_id"],
-#             "date": data["date"].isoformat(),
-#             "title": data["title"]
-#         })
-
-#     response_data = {
-#         "contents": contents_list
-#     }
-
-#     return https_fn.Response(json.dumps(response_data), mimetype="application/json")
 
 #############################
 # GET - コンテンツ詳細を取得する
