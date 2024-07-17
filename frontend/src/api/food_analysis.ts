@@ -1,5 +1,5 @@
-const API_URL = "http://127.0.0.1:5001/kids-ai-lab/us-central1";
-// const API_URL = "https://us-central1-kids-ai-lab.cloudfunctions.net";
+// const API_URL = "http://127.0.0.1:5001/kids-ai-lab/us-central1";
+const API_URL = "https://us-central1-kids-ai-lab.cloudfunctions.net";
 
 //////////////////////////////
 // 食品画像をアップロード
@@ -21,7 +21,12 @@ export const uploadFood = async (
         file_content: fileContent,
       }),
     });
-    return response.json();
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
   } catch (error) {
     console.error("食品のアップロード中にエラーが発生しました:", error);
     throw error;

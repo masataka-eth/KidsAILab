@@ -6,15 +6,34 @@
     <p class="text-center text-lg mb-4 text-gray-600">
       AIにりょうりをぶんせきさせよう🔍
     </p>
-    <input type="file" @change="onFileSelected" accept="image/*" />
-    <br />
-    <button
+    <div class="flex justify-center space-x-4 mt-8">
+      <input
+        type="file"
+        @change="onFileSelected"
+        accept="image/*"
+        class="hidden"
+        ref="fileInput"
+      />
+      <button
+        @click="openCamera"
+        class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+      >
+        カメラを起動
+      </button>
+      <button
+        @click="openGallery"
+        class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+      >
+        ギャラリーから選択
+      </button>
+    </div>
+    <!-- <button
       @click="uploadFile"
       :disabled="!selectedFile || isLoading"
-      class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mt-8"
+      class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mt-4"
     >
       {{ isLoading ? "アップロード中..." : "アップロード" }}
-    </button>
+    </button> -->
     <!-- <div v-if="isLoading" class="text-center mt-4">
       <i class="fas fa-spinner fa-spin text-8xl text-purple-700"></i>
     </div> -->
@@ -200,9 +219,14 @@ const currentPage = ref(1);
 const hasNextPage = ref(false);
 const showModal = ref(false);
 const modalFood = ref(null);
+const fileInput = ref(null);
 
 const onFileSelected = (event) => {
-  selectedFile.value = event.target.files[0];
+  const files = event.target.files;
+  if (files && files.length > 0) {
+    selectedFile.value = files[0];
+    uploadFile(); // ファイルが選択されたらすぐにアップロードを開始
+  }
 };
 
 const uploadFile = async () => {
@@ -213,25 +237,31 @@ const uploadFile = async () => {
   try {
     const reader = new FileReader();
     reader.onload = async (e) => {
-      const fileContent = e.target.result.split(",")[1];
-      const originalFileName = selectedFile.value.name;
-      const fileExtension = originalFileName.split(".").pop();
-      const timestamp = new Date().getTime();
-      const newFileName = `${userStore.uid}_${timestamp}.${fileExtension}`;
+      try {
+        const fileContent = e.target.result.split(",")[1];
+        const originalFileName = selectedFile.value.name;
+        const fileExtension = originalFileName.split(".").pop();
+        const timestamp = new Date().getTime();
+        const newFileName = `${userStore.uid}_${timestamp}.${fileExtension}`;
 
-      const response = await uploadFood(
-        userStore.uid,
-        newFileName,
-        fileContent
-      );
-      console.log("アップロード成功:", response);
+        const response = await uploadFood(
+          userStore.uid,
+          newFileName,
+          fileContent
+        );
+        console.log("アップロード成功:", response);
 
-      isLoading.value = false;
-      await fetchFoods(); // アップロード後にデータを再取得
+        await fetchFoods(); // アップロード後にデータを再取得
+      } catch (error) {
+        console.error("アップローー:", error);
+        // ここでユーザーにエラーメッセージを表示するなどの処理を追加
+      } finally {
+        isLoading.value = false;
+      }
     };
     reader.readAsDataURL(selectedFile.value);
   } catch (error) {
-    console.error("アップロードエラー:", error);
+    console.error("ファイル読み込みエラー:", error);
     isLoading.value = false;
   }
 };
@@ -275,6 +305,211 @@ const formatDate = (dateString) => {
 const showDetails = (food) => {
   modalFood.value = food;
   showModal.value = true;
+};
+
+const openCamera = async () => {
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    try {
+      // まず、カメラの権限状態を確認
+      const permissionStatus = await navigator.permissions.query({
+        name: "camera",
+      });
+
+      if (permissionStatus.state === "denied") {
+        alert(
+          "カメラへのアクセスが拒否されています。ブラウザの設定でカメラへのアクセスを許可してください。"
+        );
+        return;
+      }
+
+      // カメラへのアクセスを要求
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+        audio: false,
+      });
+
+      const video = document.createElement("video");
+      video.srcObject = stream;
+      video.style.width = "100%";
+      video.style.height = "auto";
+      video.style.maxWidth = "640px";
+      video.style.maxHeight = "480px";
+      video.autoplay = true;
+      video.playsInline = true;
+
+      const createButton = (text, onClick, bgColor) => {
+        const button = document.createElement("button");
+        button.textContent = text;
+        button.style.position = "relative";
+        button.style.marginTop = "30px";
+        button.style.padding = "10px 20px";
+        button.style.fontSize = "16px";
+        button.style.backgroundColor = bgColor;
+        button.style.color = "white";
+        button.style.border = "none";
+        button.style.borderRadius = "5px";
+        button.style.cursor = "pointer";
+        button.style.width = window.innerWidth <= 640 ? "120px" : "200px";
+        button.onclick = onClick;
+        return button;
+      };
+
+      const captureButton = createButton(
+        "撮影",
+        () => captureImage(video, stream),
+        "#4CAF50"
+      );
+      const cancelButton = createButton(
+        "キャンセル",
+        () => closeCamera(stream),
+        "#f44336"
+      );
+
+      const buttonContainer = document.createElement("div");
+      buttonContainer.style.display = "flex";
+      buttonContainer.style.justifyContent = "center";
+      buttonContainer.style.gap = "10px";
+      buttonContainer.appendChild(captureButton);
+      buttonContainer.appendChild(cancelButton);
+
+      const cameraContainer = document.createElement("div");
+      cameraContainer.style.position = "fixed";
+      cameraContainer.style.top = "0";
+      cameraContainer.style.left = "0";
+      cameraContainer.style.width = "100%";
+      cameraContainer.style.height = "100%";
+      cameraContainer.style.backgroundColor = "black";
+      cameraContainer.style.zIndex = "1000";
+      cameraContainer.style.display = "flex";
+      cameraContainer.style.flexDirection = "column";
+      cameraContainer.style.alignItems = "center";
+      cameraContainer.style.justifyContent = "center";
+      cameraContainer.appendChild(video);
+      cameraContainer.appendChild(buttonContainer);
+
+      // 既存のカメラコンテナを削除
+      const existingContainer = document.getElementById("camera-container");
+      if (existingContainer) {
+        existingContainer.remove();
+      }
+
+      // 新しいカメラコンテナを追加
+      cameraContainer.id = "camera-container";
+      document.body.appendChild(cameraContainer);
+
+      // タイトル以外の要素を非��示にする
+      const elementsToHide = document.querySelectorAll("body > *:not(h2)");
+      elementsToHide.forEach((el) => {
+        if (el.id !== "camera-container") {
+          el.style.display = "none";
+        }
+      });
+
+      // ウィンドウサイズが変更されたときにボタンの幅を調整
+      const resizeButtons = () => {
+        const newWidth = window.innerWidth <= 640 ? "120px" : "200px";
+        captureButton.style.width = newWidth;
+        cancelButton.style.width = newWidth;
+      };
+
+      window.addEventListener("resize", resizeButtons);
+
+      // ビデオの読み込みが完了したらプレイを開始
+      video.onloadedmetadata = () => {
+        video
+          .play()
+          .catch((e) => console.error("ビデオの再生に失敗しました:", e));
+      };
+    } catch (error) {
+      console.error("カメラの起動に失敗しました:", error);
+      if (error instanceof DOMException && error.name === "NotAllowedError") {
+        alert(
+          "カメラへのアクセスが拒否されました。ブラウザの設定でカメラへのアクセスを許可してください。"
+        );
+      } else {
+        alert(
+          "カメラの起動に失敗しました。デバイスのカメラが正常に動作しているか確認してください。"
+        );
+      }
+    }
+  } else {
+    console.error("getUserMediaがサポートされていません");
+    alert("お使いのブラウザはカメラ機能をサポートしていません。");
+  }
+};
+
+const captureImage = (video, stream) => {
+  const canvas = document.createElement("canvas");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const context = canvas.getContext("2d");
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const imageDataUrl = canvas.toDataURL("image/jpeg");
+
+  // Blobに変換
+  const blob = dataURLtoBlob(imageDataUrl);
+
+  // ファイル名を成
+  const fileName = `captured_image_${Date.now()}.jpg`;
+
+  // File オブジェクトを作成
+  const file = new File([blob], fileName, { type: "image/jpeg" });
+
+  // selectedFile を更新
+  selectedFile.value = file;
+
+  // ストリームを停止
+  stream.getTracks().forEach((track) => track.stop());
+
+  // カメラ要素を削除
+  const cameraContainer = document.getElementById("camera-container");
+  if (cameraContainer) {
+    cameraContainer.remove();
+  }
+
+  // 非表示にした要素を再表示
+  const elementsToShow = document.querySelectorAll("body > *");
+  elementsToShow.forEach((el) => {
+    el.style.display = "";
+  });
+
+  // アップロードを自動的に開始
+  uploadFile();
+};
+
+// DataURL を Blob に変換する関数
+const dataURLtoBlob = (dataURL) => {
+  const arr = dataURL.split(",");
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+};
+
+const closeCamera = (stream) => {
+  if (stream) {
+    stream.getTracks().forEach((track) => track.stop());
+  }
+  const cameraContainer = document.getElementById("camera-container");
+  if (cameraContainer) {
+    cameraContainer.remove();
+  }
+  // 非表示にした要素を再表示
+  const elementsToShow = document.querySelectorAll("body > *");
+  elementsToShow.forEach((el) => {
+    el.style.display = "";
+  });
+};
+
+const openGallery = () => {
+  if (fileInput.value) {
+    fileInput.value.removeAttribute("capture");
+    fileInput.value.click();
+  }
 };
 
 onMounted(() => {
