@@ -9,6 +9,7 @@ import LoginSns from "@/components/LoginSns.vue";
 import MugenQuiz from "@/views/MugenQuiz.vue";
 import MugenQuizRanking from "@/views/MugenQuizRanking.vue";
 import CookingRecipe from "@/views/CookingRecipe.vue";
+import CookingRecipeList from "@/views/CookingRecipeList.vue";
 import CookingAnalysis from "@/views/CookingAnalysis.vue";
 
 const routes = [
@@ -58,6 +59,12 @@ const routes = [
         path: "cooking-recipe",
         name: "CookingRecipe",
         component: CookingRecipe,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "cooking-recipe-list",
+        name: "CookingRecipeList",
+        component: CookingRecipeList,
         meta: { requiresAuth: true },
       },
       {

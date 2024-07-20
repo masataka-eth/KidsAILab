@@ -1,5 +1,5 @@
-const API_URL = "http://127.0.0.1:5001/kids-ai-lab/us-central1";
-// const API_URL = "https://us-central1-kids-ai-lab.cloudfunctions.net";
+// const API_URL = "http://127.0.0.1:5001/kids-ai-lab/us-central1";
+const API_URL = "https://us-central1-kids-ai-lab.cloudfunctions.net";
 
 //////////////////////////////
 // クイズレベルを追加

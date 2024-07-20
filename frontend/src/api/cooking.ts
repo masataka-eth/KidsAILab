@@ -18,3 +18,13 @@ export const getRecipes = async (material: string, aji_type: string) => {
   );
   return response.json();
 };
+
+//////////////////////////////
+// 今までのレシピを取得
+/////////////////////////////
+export const getExistingRecipes = async (page: number) => {
+  const response = await fetch(
+    `${API_URL}/on_get_existing_recipes?page=${page}`
+  );
+  return response.json();
+};

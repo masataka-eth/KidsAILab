@@ -11,7 +11,7 @@ from api.make_contents import make_contents
 from api.db_infinete_quiz_level import update_quiz_level, get_quiz_level, get_quiz_level_top10
 from api.make_quiz import make_quiz
 from api.cooking_material import get_cooking_materials
-from api.cooking_recipe import get_cooking_recipe
+from api.cooking_recipe import get_cooking_recipe, get_existing_recipes
 from api.db_food import food_upload, get_food_data
 
 initialize_app()
@@ -67,6 +67,10 @@ def on_get_cooking_materials(req: https_fn.Request) -> https_fn.Response:
 @https_fn.on_request(cors=cors_config)
 def on_get_cooking_recipe(req: https_fn.Request) -> https_fn.Response:
     return get_cooking_recipe(req)
+
+@https_fn.on_request(cors=cors_config)
+def on_get_existing_recipes(req: https_fn.Request) -> https_fn.Response:
+    return get_existing_recipes(req)
 
 @https_fn.on_request(cors=cors_config)
 def on_food_upload(req: https_fn.Request) -> https_fn.Response:

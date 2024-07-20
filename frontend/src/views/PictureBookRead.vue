@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto px-4 mt-[-20px]">
-    <h2 class="text-4xl font-bold mb-4 text-center text-purple-700 mb-12">
+    <h2 class="text-3xl font-bold mb-4 text-center text-purple-700 sm:text-4xl">
       <i :class="pageIcon"></i> {{ pageTitle }}
     </h2>
     <div class="overflow-x-auto min-h-[50vh]">

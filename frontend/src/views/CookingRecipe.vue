@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto px-4 mt-[-20px]">
-    <h2 class="text-4xl font-bold mb-4 text-center text-purple-700">
+    <h2 class="text-3xl font-bold mb-4 text-center text-purple-700 sm:text-4xl">
       <i class="fas fa-utensils mr-2"></i> りょうりをつくる
     </h2>
     <p class="text-center text-lg mb-4 text-gray-600">
@@ -32,10 +32,28 @@
           </label>
         </div>
       </div>
+      <div class="mt-6 text-center">
+        <p class="text-lg mb-2 text-gray-600">あじのタイプをえらぼう！🍽️</p>
+        <div class="flex justify-center space-x-4">
+          <label
+            v-for="type in ajiTypes"
+            :key="type"
+            class="inline-flex items-center"
+          >
+            <input
+              type="radio"
+              v-model="selectedAjiType"
+              :value="type"
+              class="form-radio h-5 w-5 text-purple-600"
+            />
+            <span class="ml-2 text-gray-700">{{ type }}</span>
+          </label>
+        </div>
+      </div>
       <button
         @click="fetchRecipe"
         class="w-1/2 min-w-[300px] py-3 px-6 bg-purple-600 hover:bg-purple-700 text-white text-lg font-semibold rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mx-auto block disabled:opacity-50 disabled:cursor-not-allowed mt-6"
-        :disabled="selectedIngredients.length !== 3"
+        :disabled="selectedIngredients.length !== 3 || !selectedAjiType"
       >
         まほうのレシピをさくせい👩‍🍳✨
       </button>
@@ -93,6 +111,8 @@ const selectedIngredients = ref([]);
 const loading = ref(true);
 const recipeLoading = ref(false);
 const recipe = ref(null);
+const ajiTypes = ["さっぱり", "こってり", "おつまみ"];
+const selectedAjiType = ref("");
 
 onMounted(async () => {
   try {
@@ -108,7 +128,10 @@ onMounted(async () => {
 const fetchRecipe = async () => {
   recipeLoading.value = true;
   try {
-    const response = await getRecipes(selectedIngredients.value);
+    const response = await getRecipes(
+      selectedIngredients.value,
+      selectedAjiType.value
+    );
     recipe.value = response;
   } catch (error) {
     console.error("Error fetching recipe:", error);
@@ -120,6 +143,7 @@ const fetchRecipe = async () => {
 const resetRecipe = async () => {
   recipe.value = null;
   selectedIngredients.value = [];
+  selectedAjiType.value = "";
   loading.value = true;
   try {
     const response = await getMaterials();

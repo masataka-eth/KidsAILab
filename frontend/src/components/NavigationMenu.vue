@@ -95,6 +95,14 @@
         </li>
         <li class="mb-4">
           <router-link
+            to="/contents/cooking-recipe-list"
+            @click="closeMenu"
+            class="block p-2 rounded-lg transition-colors duration-200 ease-in-out hover:bg-gray-100 dark:hover:bg-paper-yellow"
+            ><i class="fas fa-list-ul mr-2"></i> みんなのレシピ</router-link
+          >
+        </li>
+        <li class="mb-4">
+          <router-link
             to="/contents/cooking-analysis"
             @click="closeMenu"
             class="block p-2 rounded-lg transition-colors duration-200 ease-in-out hover:bg-gray-100 dark:hover:bg-paper-yellow"
