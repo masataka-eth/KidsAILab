@@ -7,6 +7,7 @@ import PictureBookCreate from "@/views/PictureBookCreate.vue";
 import PictureBookRead from "@/views/PictureBookRead.vue";
 import LoginSns from "@/components/LoginSns.vue";
 import MugenQuiz from "@/views/MugenQuiz.vue";
+import MugenQuizRanking from "@/views/MugenQuizRanking.vue";
 import CookingRecipe from "@/views/CookingRecipe.vue";
 import CookingAnalysis from "@/views/CookingAnalysis.vue";
 
@@ -45,6 +46,12 @@ const routes = [
         path: "mugen-quiz",
         name: "MugenQuiz",
         component: MugenQuiz,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "mugen-quiz-ranking",
+        name: "MugenQuizRanking",
+        component: MugenQuizRanking,
         meta: { requiresAuth: true },
       },
       {

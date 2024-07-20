@@ -1,5 +1,5 @@
-// const API_URL = "http://127.0.0.1:5001/kids-ai-lab/us-central1";
-const API_URL = "https://us-central1-kids-ai-lab.cloudfunctions.net";
+const API_URL = "http://127.0.0.1:5001/kids-ai-lab/us-central1";
+// const API_URL = "https://us-central1-kids-ai-lab.cloudfunctions.net";
 
 //////////////////////////////
 // クイズレベルを追加
@@ -79,6 +79,32 @@ export async function getQuizByLevel(level: number) {
       throw new Error("Failed to get quiz by level: " + error.message);
     } else {
       throw new Error("Failed to get quiz by level: Unknown error");
+    }
+  }
+}
+
+//////////////////////////////
+// クイズレベルTOP10を取得
+/////////////////////////////
+export async function getQuizLevelTop10() {
+  try {
+    const response = await fetch(API_URL + "/on_get_quiz_level_top10", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to get quiz level top 10");
+    }
+
+    return await response.json();
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error("Failed to get quiz level top 10: " + error.message);
+    } else {
+      throw new Error("Failed to get quiz level top 10: Unknown error");
     }
   }
 }

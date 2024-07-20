@@ -27,6 +27,9 @@ def get_cooking_recipe(req: https_fn.Request) -> https_fn.Response:
     material = req.args.get("material")
     if not material:
         return https_fn.Response(status=400, body="material is required")
+    aji_type = req.args.get("aji_type")
+    if not aji_type:
+        return https_fn.Response(status=400, body="aji_type is required")
 
     functions = [
         {
@@ -92,6 +95,9 @@ def get_cooking_recipe(req: https_fn.Request) -> https_fn.Response:
     user_order = f"""
     使う食材３つです。今回は以下です。
     {material}
+
+    料理の味付けタイプは以下の通りです。
+    {aji_type}
     """
 
     result = client.chat.completions.create(
@@ -135,7 +141,8 @@ def get_cooking_recipe(req: https_fn.Request) -> https_fn.Response:
     {parsedResult["taste"]}
 
     ## 条件
-    - 料理が完成された後の一枚絵としてください
+    - レシピの作成手順を時間をかけて理解をして、完成された料理を描いてください
+    - 料理が完成された後の「一枚絵」としてください
     - 美味しそうな写真のような画像としてください
     """
     image_response = client.images.generate(

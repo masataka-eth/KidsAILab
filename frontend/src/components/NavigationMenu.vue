@@ -75,6 +75,14 @@
           >
         </li>
         <li class="mb-4">
+          <router-link
+            to="/contents/mugen-quiz-ranking"
+            @click="closeMenu"
+            class="block p-2 rounded-lg transition-colors duration-200 ease-in-out hover:bg-gray-100 dark:hover:bg-paper-yellow"
+            ><i class="fas fa-trophy mr-2"></i> クイズランキング</router-link
+          >
+        </li>
+        <li class="mb-4">
           <hr class="my-4 border-t border-gray-300" />
         </li>
         <li class="mb-4">

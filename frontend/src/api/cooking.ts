@@ -12,9 +12,9 @@ export const getMaterials = async () => {
 //////////////////////////////
 // レシピを取得
 /////////////////////////////
-export const getRecipes = async (material: string) => {
+export const getRecipes = async (material: string, aji_type: string) => {
   const response = await fetch(
-    `${API_URL}/on_get_cooking_recipe?material=${material}`
+    `${API_URL}/on_get_cooking_recipe?material=${material}&aji_type=${aji_type}`
   );
   return response.json();
 };
